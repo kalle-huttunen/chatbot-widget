@@ -1,0 +1,365 @@
+/* Chat widget styles.
+   Theme it by setting the --oac-* variables on :root in your own stylesheet.
+   The defaults below have zero specificity, so your values win in any order. */
+
+:where(:root) {
+  --oac-accent: #00ff88;
+  --oac-on-accent: #0d0d12;
+  --oac-bg: #0d0d12;
+  --oac-surface: #111118;
+  --oac-bubble: #16161e;
+  --oac-text: #c0c0c0;
+  --oac-text-strong: #ffffff;
+  --oac-muted: #888888;
+  --oac-border: rgba(255, 255, 255, 0.08);
+  --oac-font: 'Inter', system-ui, sans-serif;
+  --oac-font-heading: 'Space Grotesk', system-ui, sans-serif;
+  /* Distance from the bottom of the viewport. Raise it while a cookie banner is showing. */
+  --oac-offset-bottom: 40px;
+}
+
+#oac-chatbot-toggle,
+#oac-chatbot,
+#oac-chatbot * {
+  box-sizing: border-box;
+}
+
+#oac-chatbot-toggle {
+  position: fixed;
+  bottom: var(--oac-offset-bottom);
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--oac-accent), color-mix(in srgb, var(--oac-accent) 80%, black));
+  color: var(--oac-on-accent);
+  font-family: var(--oac-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--oac-accent) 30%, transparent);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#oac-chatbot-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px color-mix(in srgb, var(--oac-accent) 40%, transparent);
+}
+/* While the chat is open the button shows a close mark instead of the label. */
+#oac-chatbot-toggle[aria-expanded="true"] {
+  font-size: 28px;
+  font-weight: 400;
+}
+
+#oac-chatbot {
+  position: fixed;
+  bottom: calc(var(--oac-offset-bottom) + 70px);
+  right: 20px;
+  width: 380px;
+  max-height: min(560px, calc(100vh - var(--oac-offset-bottom) - 90px));
+  display: none;
+  flex-direction: column;
+  border: 1px solid var(--oac-border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 9999;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  font-family: var(--oac-font);
+  text-align: left;
+}
+#oac-chatbot.oac-open {
+  display: flex;
+}
+
+#oac-chatbot-toggle:focus-visible,
+#oac-chatbot button:focus-visible,
+#oac-chatbot a:focus-visible {
+  outline: 2px solid var(--oac-accent);
+  outline-offset: 2px;
+}
+
+/* Header */
+#oac-chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--oac-surface);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--oac-border);
+  flex-shrink: 0;
+}
+#oac-chatbot .oac-title {
+  font-family: var(--oac-font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--oac-text-strong);
+}
+#oac-chatbot .oac-header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#oac-chatbot .oac-header-buttons button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--oac-muted);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+#oac-chatbot .oac-header-buttons button:hover {
+  color: var(--oac-text-strong);
+  background: var(--oac-border);
+}
+
+/* Message list */
+#oac-chat-window {
+  flex-grow: 1;
+  background: var(--oac-bg);
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 14px;
+  color: var(--oac-text);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--oac-muted) transparent;
+  min-height: 100px;
+  max-height: 380px;
+}
+
+/* Input */
+#oac-input-area {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: var(--oac-surface);
+  border-top: 1px solid var(--oac-border);
+  flex-shrink: 0;
+}
+#oac-user-input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-family: var(--oac-font);
+  line-height: 1.4;
+  border: 1px solid var(--oac-border);
+  border-radius: 8px;
+  margin: 0 8px 0 0;
+  resize: none;
+  overflow-y: auto;
+  height: 40px;
+  max-height: 80px;
+  background: var(--oac-bg);
+  color: var(--oac-text-strong);
+  transition: border-color 0.2s;
+}
+#oac-user-input:focus {
+  border-color: var(--oac-accent);
+  outline: none;
+}
+#oac-user-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#oac-send-button {
+  background: var(--oac-accent);
+  color: var(--oac-on-accent);
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-family: var(--oac-font-heading);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+#oac-send-button:hover {
+  background: color-mix(in srgb, var(--oac-accent) 90%, black);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--oac-accent) 20%, transparent);
+}
+#oac-send-button:disabled {
+  background: #333;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Messages */
+#oac-chatbot .oac-message {
+  display: flex;
+  flex-direction: column;
+  max-width: 90%;
+  margin-bottom: 4px;
+}
+#oac-chatbot .oac-message.oac-bot {
+  align-items: flex-start;
+  margin-right: auto;
+}
+#oac-chatbot .oac-message.oac-user {
+  align-items: flex-end;
+  margin-left: auto;
+}
+#oac-chatbot .oac-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+#oac-chatbot .oac-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+#oac-chatbot .oac-avatar img {
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--oac-accent) 30%, transparent);
+}
+#oac-chatbot .oac-status {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  background: var(--oac-accent);
+  border: 2px solid var(--oac-bg);
+  border-radius: 50%;
+  animation: oac-pulse 2s infinite;
+}
+@keyframes oac-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+#oac-chatbot .oac-bubble {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  max-width: 100%;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+#oac-chatbot .oac-user .oac-bubble {
+  background: color-mix(in srgb, var(--oac-accent) 12%, transparent);
+  color: var(--oac-text-strong);
+  border: 1px solid color-mix(in srgb, var(--oac-accent) 20%, transparent);
+  border-bottom-right-radius: 2px;
+}
+#oac-chatbot .oac-bot .oac-bubble {
+  background: var(--oac-bubble);
+  border: 1px solid var(--oac-border);
+  color: var(--oac-text);
+  border-top-left-radius: 2px;
+}
+#oac-chatbot .oac-bubble a {
+  color: var(--oac-accent);
+}
+#oac-chatbot .oac-bubble.oac-typing {
+  color: var(--oac-muted);
+  font-style: italic;
+}
+#oac-chatbot .oac-bubble.oac-error {
+  background: rgba(255, 60, 60, 0.08);
+  border-color: rgba(255, 60, 60, 0.2);
+  color: #ff6666;
+}
+#oac-chatbot .oac-bubble.oac-confirm {
+  background: rgba(255, 200, 50, 0.08);
+  border-color: rgba(255, 200, 50, 0.2);
+  color: #cccccc;
+}
+
+#oac-chatbot .oac-time {
+  font-size: 0.7rem;
+  color: var(--oac-muted);
+  margin-top: 3px;
+}
+#oac-chatbot .oac-bot .oac-time {
+  margin-left: 44px;
+}
+
+/* Suggested first questions */
+#oac-chatbot .oac-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+#oac-chatbot .oac-suggestion {
+  background: transparent;
+  color: var(--oac-accent);
+  border: 1px solid color-mix(in srgb, var(--oac-accent) 25%, transparent);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-family: var(--oac-font);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s, border-color 0.2s;
+}
+#oac-chatbot .oac-suggestion:hover {
+  background: color-mix(in srgb, var(--oac-accent) 6%, transparent);
+  border-color: var(--oac-accent);
+}
+
+/* Close confirmation */
+#oac-chatbot .oac-confirm-buttons {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+}
+#oac-chatbot .oac-confirm-buttons button {
+  background: var(--oac-border);
+  color: var(--oac-text-strong);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--oac-font);
+  transition: color 0.2s, border-color 0.2s;
+}
+#oac-chatbot .oac-confirm-buttons button:hover {
+  border-color: var(--oac-accent);
+  color: var(--oac-accent);
+}
+
+@media (max-width: 480px) {
+  #oac-chatbot {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: calc(var(--oac-offset-bottom) + 60px);
+    max-height: 70vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #oac-chatbot .oac-status {
+    animation: none;
+  }
+  #oac-chat-window {
+    scroll-behavior: auto;
+  }
+  #oac-chatbot-toggle {
+    transition: none;
+  }
+}
